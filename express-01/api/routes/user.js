@@ -2,26 +2,41 @@ import { Router } from "express";
 
 const router = Router();
 
+// LISTAR TODOS
 router.get("/", async (req, res) => {
   const users = await req.context.models.User.findAll();
   return res.send(users);
 });
 
+// BUSCAR POR ID
 router.get("/:userId", async (req, res) => {
   const user = await req.context.models.User.findByPk(req.params.userId);
   return res.send(user);
 });
 
-router.post("/", (req, res) => {
-  return res.send("POST HTTP method on user resource");
+// CRIAR USUÁRIO
+router.post("/", async (req, res) => {
+  const user = await req.context.models.User.create({
+    username: req.body.username,
+  });
+  return res.send(user);
 });
 
-router.put("/:userId", (req, res) => {
-  return res.send(`PUT HTTP method on user/${req.params.userId} resource`);
+// ATUALIZAR USUÁRIO
+router.put("/:userId", async (req, res) => {
+  const user = await req.context.models.User.findByPk(req.params.userId);
+  if (user) {
+    await user.update({ username: req.body.username });
+  }
+  return res.send(user);
 });
 
-router.delete("/:userId", (req, res) => {
-  return res.send(`DELETE HTTP method on user/${req.params.userId} resource`);
+// DELETAR USUÁRIO
+router.delete("/:userId", async (req, res) => {
+  const result = await req.context.models.User.destroy({
+    where: { id: req.params.userId },
+  });
+  return res.send(result !== 0);
 });
 
 export default router;
