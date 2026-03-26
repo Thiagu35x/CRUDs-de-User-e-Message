@@ -25,7 +25,10 @@ app.use((req, res, next) => {
 app.use("/session", routes.session);
 app.use("/users", routes.user);
 app.use("/messages", routes.message);
-
+// Rota raiz para evitar o erro 404 na Vercel
+app.get("/", (req, res) => {
+  res.send("API de Usuários e Mensagens rodando com sucesso! Acesse /users para ver os dados.");
+});
 app.get("/", (req, res) => {
   res.send(
     "Received a GET HTTP method\nServidor rodando!\n" + process.env.MESSAGE,
